@@ -3,12 +3,19 @@ from models.maze import Maze
 
 
 def main():
-    win = Window(800, 600)
+    width = 1200
+    height = 800
+    padding = 100
+    size = 50
+    rows = (height - (2 * padding)) // size
+    cols = (width - (2 * padding)) // size
 
-    maze = Maze(50, 55, 7, 10, 70, win)
+    window = Window(width, height)
+
+    maze = Maze(padding, padding, rows, cols, size, window)
     maze.solve()
 
-    win.wait_for_close()
+    window.wait_for_close()
 
 
 main()

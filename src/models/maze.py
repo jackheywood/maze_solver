@@ -50,24 +50,24 @@ class Maze:
             return
         for col in self._cells:
             for cell in col:
-                self.__draw_cell(cell)
+                self.__draw_cell(cell, 0.005)
 
-    def __draw_cell(self, cell):
+    def __draw_cell(self, cell, sleep_seconds):
         if self.__window is None:
             return
         cell.draw()
-        self.__animate()
+        self.__animate(sleep_seconds)
 
     def __break_entrance_and_exit(self):
         # Break top left wall
         top_left_cell = self._cells[0][0]
         top_left_cell.has_left_wall = False
-        self.__draw_cell(top_left_cell)
+        self.__draw_cell(top_left_cell, 0.005)
 
         # Break bottom right wall
         top_right_cell = self._cells[self.__cols - 1][self.__rows - 1]
         top_right_cell.has_right_wall = False
-        self.__draw_cell(top_right_cell)
+        self.__draw_cell(top_right_cell, 0.005)
 
     def __break_walls(self, start_x, start_y):
         cell_stack = [(start_x, start_y)]
@@ -79,7 +79,7 @@ class Maze:
             neighbours = self.__get_valid_neighbours(x, y)
 
             if len(neighbours) == 0:
-                self.__draw_cell(current_cell)
+                self.__draw_cell(current_cell, 0.01)
                 continue
             else:
                 cell_stack.append((x, y))
@@ -137,7 +137,7 @@ class Maze:
 
 
     def __solve_recursive(self, x, y):
-        self.__animate()
+        self.__animate(0.05)
         if x == self.__cols - 1 and y == self.__rows - 1:
             return True
         current_cell = self._cells[x][y]
@@ -162,8 +162,8 @@ class Maze:
             for cell in col:
                 cell.visited = False
 
-    def __animate(self):
+    def __animate(self, sleep_seconds):
         if self.__window is None:
             return
         self.__window.redraw()
-        time.sleep(0.01)
+        time.sleep(sleep_seconds)
