@@ -4,8 +4,6 @@ This project is a **Maze Solver** implemented in Python using the Tkinter
 library for graphical interface. The program generates and solves mazes using
 the **Depth First Search (DFS)** algorithm.
 
----
-
 ## Features
 
 - **Maze Generation**: Generate a visual maze dynamically.
@@ -13,8 +11,6 @@ the **Depth First Search (DFS)** algorithm.
   algorithm.
 - **GUI**: Interactive graphical user interface built with Tkinter.
 - **Unit Tests**: Includes unit tests for validating functionality.
-
----
 
 ## Installation
 
@@ -34,8 +30,6 @@ permissions:
    chmod +x test.sh
    ```
 
----
-
 ## Usage
 
 ### Running the Maze Solver
@@ -47,8 +41,6 @@ To launch the program, execute the following command:
 ```
 
 This will open the GUI which will generate and solve a random maze.
-
----
 
 ### Running Unit Tests
 
