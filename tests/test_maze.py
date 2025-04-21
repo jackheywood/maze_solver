@@ -48,6 +48,13 @@ class TestMaze(unittest.TestCase):
                 self.assertEqual(cell._center.x, x * size + size / 2)
                 self.assertEqual(cell._center.y, y * size + size / 2)
 
+    def test_maze_breaks_entrance_and_exit(self):
+        # Act
+        maze = Maze(0, 0, 10, 10, 10)
+
+        # Assert
+        self.assertFalse(maze._cells[0][0].has_left_wall)
+        self.assertFalse(maze._cells[9][9].has_right_wall)
 
 if __name__ == "__main__":
     unittest.main()
