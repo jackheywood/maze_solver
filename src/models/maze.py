@@ -26,7 +26,7 @@ class Maze:
         self.__create_cells()
         self.__draw_cells()
         self.__break_entrance_and_exit()
-        self.__break_walls_recursive(0, 0)
+        self.__break_walls(0, 0)
 
     def __create_cells(self):
         self._cells = []
@@ -65,24 +65,28 @@ class Maze:
         top_right_cell.has_right_wall = False
         self.__draw_cell(top_right_cell)
 
-    def __break_walls_recursive(self, x, y):
-        current_cell = self._cells[x][y]
-        current_cell.visited = True
+    def __break_walls(self, start_x, start_y):
+        cell_stack = [(start_x, start_y)]
 
-        while True:
+        while cell_stack:
+            (x, y) = cell_stack.pop()
+            current_cell = self._cells[x][y]
+            current_cell.visited = True
             directions = self.__get_valid_directions(x, y)
 
             if len(directions) == 0:
                 self.__draw_cell(current_cell)
-                return
+                continue
+            else:
+                cell_stack.append((x, y))
 
             direction = random.choice(list(directions.keys()))
 
             (next_x, next_y) = directions[direction]
+            cell_stack.append((next_x, next_y))
             next_cell = self._cells[next_x][next_y]
 
             self.__break_walls_between_cells(direction, current_cell, next_cell)
-            self.__break_walls_recursive(next_x, next_y)
 
     def __get_valid_directions(self, x, y):
         directions = {}
@@ -118,4 +122,4 @@ class Maze:
         if self.__window is None:
             return
         self.__window.redraw()
-        time.sleep(0.025)
+        time.sleep(0.01)
