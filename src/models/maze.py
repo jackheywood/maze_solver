@@ -27,6 +27,10 @@ class Maze:
         self.__draw_cells()
         self.__break_entrance_and_exit()
         self.__break_walls(0, 0)
+        self.__reset_cells_visited()
+
+    def solve(self):
+        return self.__solve_recursive(0, 0)
 
     def __create_cells(self):
         self._cells = []
@@ -72,31 +76,44 @@ class Maze:
             (x, y) = cell_stack.pop()
             current_cell = self._cells[x][y]
             current_cell.visited = True
-            directions = self.__get_valid_directions(x, y)
+            neighbours = self.__get_valid_neighbours(x, y)
 
-            if len(directions) == 0:
+            if len(neighbours) == 0:
                 self.__draw_cell(current_cell)
                 continue
             else:
                 cell_stack.append((x, y))
 
-            direction = random.choice(list(directions.keys()))
+            direction = random.choice(list(neighbours.keys()))
 
-            (next_x, next_y) = directions[direction]
+            (next_x, next_y) = neighbours[direction]
             cell_stack.append((next_x, next_y))
             next_cell = self._cells[next_x][next_y]
 
             self.__break_walls_between_cells(direction, current_cell, next_cell)
 
-    def __get_valid_directions(self, x, y):
+    def __get_valid_neighbours(self, x, y, check_walls=False):
         directions = {}
-        if x - 1 >= 0 and not self._cells[x - 1][y].visited:
+        current = self._cells[x][y]
+        if (
+                x - 1 >= 0 and not self._cells[x - 1][y].visited
+                and (not check_walls or not current.has_left_wall)
+        ):
             directions[Direction.LEFT] = (x - 1, y)
-        if x + 1 < self.__cols and not self._cells[x + 1][y].visited:
+        if (
+                x + 1 < self.__cols and not self._cells[x + 1][y].visited
+                and (not check_walls or not current.has_right_wall)
+        ):
             directions[Direction.RIGHT] = (x + 1, y)
-        if y - 1 >= 0 and not self._cells[x][y - 1].visited:
+        if (
+                y - 1 >= 0 and not self._cells[x][y - 1].visited
+                and (not check_walls or not current.has_top_wall)
+        ):
             directions[Direction.UP] = (x, y - 1)
-        if y + 1 < self.__rows and not self._cells[x][y + 1].visited:
+        if (
+                y + 1 < self.__rows and not self._cells[x][y + 1].visited
+                and (not check_walls or not current.has_bottom_wall)
+        ):
             directions[Direction.DOWN] = (x, y + 1)
         return directions
 
@@ -117,6 +134,33 @@ class Maze:
                 next_cell.has_left_wall = False
             case _:
                 raise Exception(f"Invalid direction {direction}")
+
+
+    def __solve_recursive(self, x, y):
+        self.__animate()
+        if x == self.__cols - 1 and y == self.__rows - 1:
+            return True
+        current_cell = self._cells[x][y]
+        current_cell.visited = True
+
+        neighbours = self.__get_valid_neighbours(x, y, True)
+        coordinates = list(neighbours.values())
+        random.shuffle(coordinates)
+
+        for (x, y) in coordinates:
+            next_cell = self._cells[x][y]
+            current_cell.draw_move(next_cell)
+            if self.__solve_recursive(x, y):
+                return True
+            current_cell.draw_move(next_cell, True)
+
+        return False
+
+
+    def __reset_cells_visited(self):
+        for col in self._cells:
+            for cell in col:
+                cell.visited = False
 
     def __animate(self):
         if self.__window is None:
