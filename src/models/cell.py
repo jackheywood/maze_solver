@@ -3,7 +3,7 @@ from models.point import Point
 
 
 class Cell:
-    def __init__(self, window, x, y, size=50):
+    def __init__(self, x, y, size=50, window=None):
         self._top_left = Point(x, y)
         self._top_right = Point(x + size, y)
         self._bottom_left = Point(x, y + size)
@@ -19,6 +19,8 @@ class Cell:
         self.has_bottom_wall = True
 
     def draw(self, fill_color="white"):
+        if self.__window is None:
+            return
         if self.has_left_wall:
             self.__window.draw_line(
                 Line(self._top_left, self._bottom_left),
